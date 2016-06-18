@@ -18,7 +18,7 @@ some of the next 8 new tiles have already be downloaded.
 
 # New methods:
 So the new methods have been added to OSMDroid CacheManager. All added methods take care of the extra tiles downloaded 
-around the GePoints list.
+around the GePoints list. So the method `extendedBoundsFromGeoPoints` returns a larger area than the original `BoundingBoxE6.fromGeoPoints(geoPoints)`.
 
     public int possibleTilesCovered(ArrayList<GeoPoint> geoPoints, final int zoomMin, final int zoomMax);
     
@@ -29,3 +29,6 @@ around the GePoints list.
     public void downloadAreaAsyncNoUI(Context ctx, ArrayList<GeoPoint> geoPoints, final int zoomMin, final int zoomMax, final CacheManagerCallback callback);
 
     public void cleanAreaAsync(Context ctx, ArrayList<GeoPoint> geoPoints, int zoomMin, int zoomMax);
+    
+    public BoundingBoxE6 extendedBoundsFromGeoPoints(ArrayList<GeoPoint> geoPoints);
+    
