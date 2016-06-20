@@ -28,8 +28,6 @@ For point 2, you will only download the 3 more tiles on the right of the big red
 For point 3, you will only download the 3 more tiles above the big green square.  
 ...
 
-[Look at the image](http://i.imgur.com/7REfdkQ.jpg)
-
 # New methods:
 So the new methods have been added to OSMDroid CacheManager. All added methods take care of the extra tiles downloaded 
 around the GePoints list. So the method `extendedBoundsFromGeoPoints(geoPoints)` returns a larger area than the original `BoundingBoxE6.fromGeoPoints(geoPoints)`.
