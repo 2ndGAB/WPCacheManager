@@ -1,7 +1,7 @@
 # WPCacheManager
 OSMDroid CacheManager enhanced to download map tile covered by a waypoints list.
 
-OSMDroid CacheManager available up to 5.3, allows you to download map tiles based on a bounding box.
+OSMDroid CacheManager available from 5.3, allows you to download map tiles based on a bounding box.
 That's of course quite usefull as we know there are lot of places where mobile connection is not good enough to use online map.
 There is a problem anyway when you develop an application providing pedestrian or cycling courses, for example, 
 where the surface of the bounding box could contain lot of tiles for high zoom level whereas the tiles 
