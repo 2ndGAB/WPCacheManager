@@ -16,14 +16,19 @@ few meters beside.
 Don't be afraid that's not so much, and in fact, only the first tile downloads 8 tiles more, because when you continue your trip,
 some of the next 8 new tiles have already be downloaded.  
 
-For example, consider that you define the path below:  
+For example, consider that you define the path drawn [on this image](http://i.imgur.com/7REfdkQ.jpg):  
 To explain what the algorithm do, I only take 3 characteristics points 1, 2 and 3.  
 The red point 1 belongs to the the red tinted tile. It will download the 1+8 tiles in the big red square.  
 The green point 2 belongs to the the green tinted tile. It will download the 1+8 tiles in the big green square.  
 The yellow point 3 belongs to the the yellow titend tile. It will download the 1+8 tiles in the big yellow square.  
 And so on...
 
-[Imgur](http://i.imgur.com/7REfdkQ.jpg)
+As you can see, for point 1, you will effectively downloads 9 tiles.  
+For point 2, you will only download the 3 more tiles on the right of the big red square.  
+For point 3, you will only download the 3 more tiles above the big green square.  
+...
+
+[Look at the image](http://i.imgur.com/7REfdkQ.jpg)
 
 # New methods:
 So the new methods have been added to OSMDroid CacheManager. All added methods take care of the extra tiles downloaded 
