@@ -6,15 +6,24 @@ That's of course quite usefull as we know there are lot of places where mobile c
 There is a problem anyway when you develop an application providing pedestrian or cycling courses, for example, 
 where the surface of the bounding box could contain lot of tiles for high zoom level whereas the tiles 
 covered by the courses are finally not so many.  
-The consequence is to wait a long time to donwload unusefull parts of the map.  
+The consequence is to wait a long time to download unusefull parts of the map.  
 
 So this WPCacheManager, which keep the original features, add the possibility to give a list of waypoints.  
-WPCacheManager considers that you will go from one waypoint to another and so will download all tiles in between.  
-And as there is a possibility for your waypoint or the course to be close to the border of a tile, I decided to
+WPCacheManager considers that you follow the path between 2 successives points in the given list.  
+And as there is a possibility for your waypoint or the path to be close to the border of a tile, I decided to
 download the 8 tiles around the given one at each zoom level, because I think it's not very cool to not see what's going 
 few meters beside.  
 Don't be afraid that's not so much, and in fact, only the first tile downloads 8 tiles more, because when you continue your trip,
-some of the next 8 new tiles have already be downloaded.
+some of the next 8 new tiles have already be downloaded.  
+
+For example, consider that you define the path below:  
+To explain what the algorithm do, I only take 3 characteristics points 1, 2 and 3.  
+The red point 1 belongs to the the red tinted tile. It will download the 1+8 tiles in the big red square.  
+The green point 2 belongs to the the green tinted tile. It will download the 1+8 tiles in the big green square.  
+The yellow point 3 belongs to the the yellow titend tile. It will download the 1+8 tiles in the big yellow square.  
+And so on...
+
+[Imgur](http://i.imgur.com/7REfdkQ.jpg)
 
 # New methods:
 So the new methods have been added to OSMDroid CacheManager. All added methods take care of the extra tiles downloaded 
