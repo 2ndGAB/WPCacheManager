@@ -7,6 +7,7 @@ There is a problem anyway when you develop an application providing pedestrian o
 where the surface of the bounding box could contain lot of tiles for high zoom level whereas the tiles 
 covered by the courses are finally not so many.  
 The consequence is to wait a long time to download unusefull parts of the map.  
+(Note: WPCacheManager is based on CacheManager [feature#315](https://github.com/osmdroid/osmdroid/issues/315).  
 
 So this WPCacheManager, which keep the original features, add the possibility to give a list of waypoints.  
 WPCacheManager considers that you follow the path between 2 successives points in the given list.  
