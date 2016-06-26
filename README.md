@@ -29,6 +29,9 @@ For point 2, you will only download the 3 more tiles on the right of the big red
 For point 3, you will only download the 3 more tiles above the big green square.  
 ...
 
+So of course, if you only need an offline map for this zoom level, because `WPCacheManager` downloads adjacent tiles, the result is not better because it will download more tiles than the original algorithm.
+Now, consider that you need to download this map from level 13 up to level 18. You will qucikly understand the advantage taking a look at [this image](http://i.imgur.com/vHscexp).
+  
 # New methods:
 So the new methods have been added to OSMDroid CacheManager. All added methods take care of the extra tiles downloaded 
 around the GePoints list. So the method `extendedBoundsFromGeoPoints(geoPoints)` returns a larger area than the original `BoundingBoxE6.fromGeoPoints(geoPoints)`.
