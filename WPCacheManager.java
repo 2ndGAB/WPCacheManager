@@ -57,13 +57,13 @@ import java.util.ArrayList;
  *
  * @author M.Kergall
  */
-public class MyCacheManager {
+public class WPCacheManager {
 
     protected final MapTileProviderBase mTileProvider;
     protected final TileWriter mTileWriter;
     protected final MapView mMapView;
 
-    public MyCacheManager(final MapView mapView) {
+    public WPCacheManager(final MapView mapView) {
         mTileProvider = mapView.getTileProvider();
         mTileWriter = new TileWriter();
         mMapView = mapView;
@@ -217,13 +217,14 @@ public class MyCacheManager {
                             tile = getMapTileFromCoordinates(wayPoint.getLatitude(), wayPoint.getLongitude(), zoomLevel);
 
                             if (!tile.equals(prevTile)) {
-                                //Log.d(Constants.APP_TAG, "New Tile lat " + tile.x + " lon " + tile.y);
                                 for (int xAround = tile.x - 1; xAround <= tile.x + 1; xAround++) {
                                     for (int yAround = tile.y - 1; yAround <= tile.y + 1; yAround++) {
+
                                         Point tileAround = new Point(xAround, yAround);
                                         foundTilePoint = false;
+                                        int iterate = 0;
                                         for (Point inList : tilePoints) {
-
+                                            iterate++;
                                             if (tileAround.equals(inList.x, inList.y)) {
                                                 foundTilePoint = true;
                                                 break;
@@ -255,9 +256,10 @@ public class MyCacheManager {
 
                 prevPoint = geoPoint;
             }
-            total += tilePoints.size();
+
         }
-        return total;
+        Log.d(Constants.APP_TAG, "need " + tilePoints.size() + " Tiles");
+        return tilePoints.size();
     }
 
     protected String zoomMessage(int zoomLevel, int zoomMin, int zoomMax) {
@@ -370,6 +372,8 @@ public class MyCacheManager {
          * @param total
          */
         public void setPossibleTilesInArea(int total);
+
+        void onTaskFailed();
     }
 
     /**
@@ -490,7 +494,11 @@ public class MyCacheManager {
             }
             if (callback != null) {
                 try {
-                    callback.onTaskComplete();
+                    if (errors == 0) {
+                        callback.onTaskComplete();
+                    } else {
+                        callback.onTaskFailed();
+                    }
                 } catch (Throwable t) {
                     Log.w(IMapView.LOGTAG, "Error caught processing cachemanager callback, your implementation is faulty", t);
                 }
@@ -613,7 +621,6 @@ public class MyCacheManager {
                                                 }
 
                                                 if (!foundTilePoint) {
-                                                    //Log.d(Constants.APP_TAG, "Load Tile lat " + xAround + " lon " + yAround);
                                                     final MapTile tileToDownload = new MapTile(zoomLevel, tileAround.x, tileAround.y);
                                                     //Drawable currentMapTile = mTileProvider.getMapTile(tile);
                                                     boolean ok = loadTile(tileSource, tileToDownload);
@@ -627,7 +634,7 @@ public class MyCacheManager {
                                                         }
                                                         publishProgress(tileCounter, zoomLevel);
                                                     }
-                                                    tilePoints.add(0.tileAround);
+                                                    tilePoints.add(0, tileAround);
                                                 }
                                             }
                                         }
@@ -646,7 +653,7 @@ public class MyCacheManager {
                                 for (int yAround = tile.y - 1; yAround <= tile.y + 1; yAround ++) {
                                     Point tileAround = new Point(xAround, yAround);
                                     final MapTile tileToDownload = new MapTile(zoomLevel, tileAround.x, tileAround.y);
-                                    //Log.d(Constants.APP_TAG, "Load Tile lat " + xAround + " lon " + yAround);
+
                                     //Drawable currentMapTile = mTileProvider.getMapTile(tile);
                                     boolean ok = loadTile(tileSource, tileToDownload);
                                     if (!ok) {
@@ -660,7 +667,7 @@ public class MyCacheManager {
                                         publishProgress(tileCounter, zoomLevel);
                                     }
 
-                                    tilePoints.add(0.tileAround);
+                                    tilePoints.add(0, tileAround);
                                 }
                             }
                         }
@@ -668,8 +675,9 @@ public class MyCacheManager {
                         prevPoint = geoPoint;
                     }
                 }
-            }
 
+                Log.d(Constants.APP_TAG, "downloaded " + tilePoints.size() + " tiles");
+            }
             return errors;
         }
 
