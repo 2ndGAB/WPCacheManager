@@ -231,7 +231,7 @@ public class MyCacheManager {
                                         }
 
                                         if (!foundTilePoint) {
-                                            tilePoints.add(tileAround);
+                                            tilePoints.add(0, tileAround);
                                         }
                                     }
                                 }
@@ -248,7 +248,7 @@ public class MyCacheManager {
                     for (int xAround = tile.x - 1; xAround <= tile.x + 1; xAround ++) {
                         for (int yAround = tile.y - 1; yAround <= tile.y + 1; yAround ++) {
                             Point tileAround = new Point(xAround, yAround);
-                            tilePoints.add(tileAround);
+                            tilePoints.add(0, tileAround);
                         }
                     }
                 }
@@ -627,7 +627,7 @@ public class MyCacheManager {
                                                         }
                                                         publishProgress(tileCounter, zoomLevel);
                                                     }
-                                                    tilePoints.add(tileAround);
+                                                    tilePoints.add(0.tileAround);
                                                 }
                                             }
                                         }
@@ -659,6 +659,8 @@ public class MyCacheManager {
                                         }
                                         publishProgress(tileCounter, zoomLevel);
                                     }
+
+                                    tilePoints.add(0.tileAround);
                                 }
                             }
                         }
