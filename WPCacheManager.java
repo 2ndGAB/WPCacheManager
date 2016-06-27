@@ -1,4 +1,4 @@
-package com.example;
+package com.ndguide.ndguide;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -57,13 +57,13 @@ import java.util.ArrayList;
  *
  * @author M.Kergall
  */
-public class WPCacheManager {
+public class MyCacheManager {
 
     protected final MapTileProviderBase mTileProvider;
     protected final TileWriter mTileWriter;
     protected final MapView mMapView;
 
-    public WPCacheManager(final MapView mapView) {
+    public MyCacheManager(final MapView mapView) {
         mTileProvider = mapView.getTileProvider();
         mTileWriter = new TileWriter();
         mMapView = mapView;
@@ -399,9 +399,6 @@ public class WPCacheManager {
 
         public CacheManagerTask(Context pCtx, BoundingBoxE6 pBB, final int pZoomMin, final int pZoomMax) {
             mCtx = pCtx;
-            if (showUI) {
-                mProgressDialog = createProgressDialog(pCtx);
-            }
             mBB = pBB;
             mZoomMin = Math.max(pZoomMin, mMapView.getMinZoomLevel());
             mZoomMax = Math.min(pZoomMax, mMapView.getMaxZoomLevel());
@@ -409,9 +406,6 @@ public class WPCacheManager {
 
         public CacheManagerTask(Context pCtx, ArrayList<GeoPoint> pGeoPoints, final int pZoomMin, final int pZoomMax) {
             mCtx = pCtx;
-            if (showUI) {
-                mProgressDialog = createProgressDialog(pCtx);
-            }
             mGeoPoints = pGeoPoints;
             mZoomMin = Math.max(pZoomMin, mMapView.getMinZoomLevel());
             mZoomMax = Math.min(pZoomMax, mMapView.getMaxZoomLevel());
@@ -467,6 +461,7 @@ public class WPCacheManager {
                 total = possibleTilesCovered(mGeoPoints, mZoomMin, mZoomMax);
             }
             if (showUI) {
+                mProgressDialog = createProgressDialog(mCtx);
                 mProgressDialog.setTitle("Downloading tiles");
                 mProgressDialog.setMessage(zoomMessage(mZoomMin, mZoomMin, mZoomMax));
 
@@ -555,6 +550,8 @@ public class WPCacheManager {
                 GeoPoint prevPoint = null, wayPoint;
                 double d, leadCoef, brng, latRad, lonRad, prevLatRad, prevLonRad;
                 Point tile, prevTile = null, lastPoint;
+                ArrayList<Point>  tilePoints = new ArrayList<>();
+                boolean foundTilePoint;
 
                 for (int zoomLevel = mZoomMin; zoomLevel <= mZoomMax; zoomLevel++) {
 
@@ -600,19 +597,37 @@ public class WPCacheManager {
                                         for (int xAround = tile.x - 1; xAround <= tile.x + 1; xAround++) {
                                             for (int yAround = tile.y - 1; yAround <= tile.y + 1; yAround++) {
                                                 Point tileAround = new Point(xAround, yAround);
-                                                //Log.d(Constants.APP_TAG, "Load Tile lat " + xAround + " lon " + yAround);
-                                                final MapTile tileToDownload = new MapTile(zoomLevel, tileAround.x, tileAround.y);
-                                                //Drawable currentMapTile = mTileProvider.getMapTile(tile);
-                                                boolean ok = loadTile(tileSource, tileToDownload);
-                                                if (!ok) {
-                                                    errors++;
-                                                }
-                                                tileCounter++;
-                                                if (tileCounter % 20 == 0) {
-                                                    if (isCancelled()) {
-                                                        return errors;
+                                                foundTilePoint = false;
+
+                                                /**
+                                                 * The following is only necessary to correctly update progress
+                                                 * as we cannot know if a tile is already downloaded or not.
+                                                 * Normally loadTile() will only download a tile if necessary
+                                                 */
+                                                for (Point inList : tilePoints) {
+
+                                                    if (tileAround.equals(inList.x, inList.y)) {
+                                                        foundTilePoint = true;
+                                                        break;
                                                     }
-                                                    publishProgress(tileCounter, zoomLevel);
+                                                }
+
+                                                if (!foundTilePoint) {
+                                                    //Log.d(Constants.APP_TAG, "Load Tile lat " + xAround + " lon " + yAround);
+                                                    final MapTile tileToDownload = new MapTile(zoomLevel, tileAround.x, tileAround.y);
+                                                    //Drawable currentMapTile = mTileProvider.getMapTile(tile);
+                                                    boolean ok = loadTile(tileSource, tileToDownload);
+                                                    if (!ok) {
+                                                        errors++;
+                                                    }
+                                                    tileCounter++;
+                                                    if (tileCounter % 20 == 0) {
+                                                        if (isCancelled()) {
+                                                            return errors;
+                                                        }
+                                                        publishProgress(tileCounter, zoomLevel);
+                                                    }
+                                                    tilePoints.add(tileAround);
                                                 }
                                             }
                                         }
@@ -710,6 +725,7 @@ public class WPCacheManager {
 
         @Override
         protected void onPreExecute() {
+            mProgressDialog = new ProgressDialog(mCtx);
             mProgressDialog.setTitle("Cleaning tiles");
             mProgressDialog.setMessage(zoomMessage(mZoomMin, mZoomMin, mZoomMax));
             int total = possibleTilesInArea(mBB, mZoomMin, mZoomMax);
