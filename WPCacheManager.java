@@ -62,6 +62,7 @@ public class WPCacheManager {
     protected final MapTileProviderBase mTileProvider;
     protected final TileWriter mTileWriter;
     protected final MapView mMapView;
+    static final double EARTH_RADIUS_IN_METERS = 6371000.0;
 
     public WPCacheManager(final MapView mapView) {
         mTileProvider = mapView.getTileProvider();
@@ -208,8 +209,8 @@ public class WPCacheManager {
                             prevLatRad = wayPoint.getLatitude() * Math.PI / 180.0;
                             prevLonRad = wayPoint.getLongitude() * Math.PI / 180.0;
 
-                            latRad = Math.asin(Math.sin(prevLatRad) * Math.cos(d / Constants.EARTH_RADIUS) + Math.cos(prevLatRad) * Math.sin(d / Constants.EARTH_RADIUS) * Math.cos(brng));
-                            lonRad = prevLonRad + Math.atan2(Math.sin(brng) * Math.sin(d / Constants.EARTH_RADIUS) * Math.cos(prevLatRad), Math.cos(d / Constants.EARTH_RADIUS) - Math.sin(prevLatRad) * Math.sin(latRad));
+                            latRad = Math.asin(Math.sin(prevLatRad) * Math.cos(d / EARTH_RADIUS_IN_METERS) + Math.cos(prevLatRad) * Math.sin(d / EARTH_RADIUS_IN_METERS) * Math.cos(brng));
+                            lonRad = prevLonRad + Math.atan2(Math.sin(brng) * Math.sin(d / EARTH_RADIUS_IN_METERS) * Math.cos(prevLatRad), Math.cos(d / EARTH_RADIUS_IN_METERS) - Math.sin(prevLatRad) * Math.sin(latRad));
 
                             wayPoint.setLatitudeE6((int)((latRad * 180.0 / Math.PI)* 1E6));
                             wayPoint.setLongitudeE6((int)((lonRad * 180.0 / Math.PI) * 1E6));
@@ -592,8 +593,8 @@ public class WPCacheManager {
                                     prevLatRad = wayPoint.getLatitude() * Math.PI / 180.0;
                                     prevLonRad = wayPoint.getLongitude() * Math.PI / 180.0;
 
-                                    latRad = Math.asin(Math.sin(prevLatRad) * Math.cos(d / Constants.EARTH_RADIUS) + Math.cos(prevLatRad) * Math.sin(d / Constants.EARTH_RADIUS) * Math.cos(brng));
-                                    lonRad = prevLonRad + Math.atan2(Math.sin(brng) * Math.sin(d / Constants.EARTH_RADIUS) * Math.cos(prevLatRad), Math.cos(d / Constants.EARTH_RADIUS) - Math.sin(prevLatRad) * Math.sin(latRad));
+                                    latRad = Math.asin(Math.sin(prevLatRad) * Math.cos(d / EARTH_RADIUS_IN_METERS) + Math.cos(prevLatRad) * Math.sin(d / EARTH_RADIUS_IN_METERS) * Math.cos(brng));
+                                    lonRad = prevLonRad + Math.atan2(Math.sin(brng) * Math.sin(d / EARTH_RADIUS_IN_METERS) * Math.cos(prevLatRad), Math.cos(d / EARTH_RADIUS_IN_METERS) - Math.sin(prevLatRad) * Math.sin(latRad));
 
                                     wayPoint.setLatitudeE6((int)((latRad * 180.0 / Math.PI)* 1E6));
                                     wayPoint.setLongitudeE6((int)((lonRad * 180.0 / Math.PI) * 1E6));
@@ -714,13 +715,13 @@ public class WPCacheManager {
      *
      */
 
-    public BoundingBoxE6 extendedBoundsFromGeoPoints(ArrayList<GeoPoint> geoPoints) {
+    public BoundingBoxE6 extendedBoundsFromGeoPoints(ArrayList<GeoPoint> geoPoints, int minZoomLevel) {
         BoundingBoxE6 bb = BoundingBoxE6.fromGeoPoints(geoPoints);
 
-        Point mLowerRight = getMapTileFromCoordinates(bb.getLatSouthE6() * 1E-6, bb.getLonEastE6() * 1E-6, Constants.OSM_MIN_ZOOM_FOR_DOWNLOADED_AREA);
-        GeoPoint lowerRightPoint = getCoordinatesFromMapTile(mLowerRight.x+1, mLowerRight.y+1, Constants.OSM_MIN_ZOOM_FOR_DOWNLOADED_AREA);
-        Point mUpperLeft = getMapTileFromCoordinates(bb.getLatNorthE6() * 1E-6, bb.getLonWestE6() * 1E-6, Constants.OSM_MIN_ZOOM_FOR_DOWNLOADED_AREA);
-        GeoPoint upperLeftPoint = getCoordinatesFromMapTile(mUpperLeft.x-1, mUpperLeft.y-1, Constants.OSM_MIN_ZOOM_FOR_DOWNLOADED_AREA);
+        Point mLowerRight = getMapTileFromCoordinates(bb.getLatSouthE6() * 1E-6, bb.getLonEastE6() * 1E-6, minZoomLevel);
+        GeoPoint lowerRightPoint = getCoordinatesFromMapTile(mLowerRight.x+1, mLowerRight.y+1, minZoomLevel);
+        Point mUpperLeft = getMapTileFromCoordinates(bb.getLatNorthE6() * 1E-6, bb.getLonWestE6() * 1E-6, minZoomLevel);
+        GeoPoint upperLeftPoint = getCoordinatesFromMapTile(mUpperLeft.x-1, mUpperLeft.y-1, minZoomLevel);
 
         BoundingBoxE6 extendedBounds = new BoundingBoxE6(upperLeftPoint.getLatitudeE6(), upperLeftPoint.getLongitudeE6(), lowerRightPoint.getLatitudeE6(), lowerRightPoint.getLongitudeE6());
 
