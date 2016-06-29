@@ -706,7 +706,7 @@ public class WPCacheManager {
      */
     public void cleanAreaAsync(Context ctx, ArrayList<GeoPoint> geoPoints, int zoomMin, int zoomMax) {
 
-        BoundingBoxE6 extendedBounds = extendedBoundsFromGeoPoints(geoPoints);
+        BoundingBoxE6 extendedBounds = extendedBoundsFromGeoPoints(geoPoints, zoomMin);
 
         new CleaningTask(ctx, extendedBounds, zoomMin, zoomMax).execute();
     }
