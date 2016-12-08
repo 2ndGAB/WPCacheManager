@@ -17,7 +17,7 @@ few meters beside.
 Don't be afraid that's not so much, and in fact, only the first tile downloads 8 tiles more, because when you continue your trip,
 some of the next 8 new tiles have already be downloaded.  
 
-For example, consider that you define the path drawn [on this image](http://i.imgur.com/Vxf9Z06.jpg):  
+For example, consider that you define the path drawn ![on this image](http://i.imgur.com/Vxf9Z06.jpg):  
 To explain what the algorithm do, I only take 3 characteristics points 1, 2 and 3.  
 The red point 1 belongs to the the red tinted tile. It will download the 1+8 tiles in the big red square.  
 The green point 2 belongs to the the green tinted tile. It will download the 1+8 tiles in the big green square.  
@@ -31,7 +31,7 @@ For point 3, you will only download the 3 more tiles above the big green square.
 
 #So here is the big advantage#
 So of course, if you only need an offline map for this zoom level, because `WPCacheManager` downloads adjacent tiles, the result is not better because it will download more tiles than the original algorithm.
-Now, consider that you need to download this map from level 13 up to level 18. You will qucikly understand the advantage taking a look at [this image](http://i.imgur.com/vHscexp).
+Now, consider that you need to download this map from level 13 up to level 18. You will qucikly understand the advantage taking a look at ![this image](http://i.imgur.com/vHscexp).
   
 # New methods:
 So the new methods have been added to OSMDroid CacheManager. All added methods take care of the extra tiles downloaded 
