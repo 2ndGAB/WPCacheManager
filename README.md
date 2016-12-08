@@ -31,7 +31,7 @@ For point 3, you will only download the 3 more tiles above the big green square.
 
 #So here is the big advantage#
 So of course, if you only need an offline map for this zoom level, because `WPCacheManager` downloads adjacent tiles, the result is not better because it will download more tiles than the original algorithm.
-Now, consider that you need to download this map from level 13 up to level 18. You will qucikly understand the advantage taking a look below where you can see all tiles downloaded to cover the area from zoom level 13 to 18 ![this image](http://i.imgur.com/O2hu8ur.jpg).
+Now, consider that you need to download this map from level 13 up to level 18. You will qucikly understand the advantage taking a look below where you can see all tiles downloaded to cover the area at level 18 ![this image](http://i.imgur.com/O2hu8ur.jpg).
   
 # New methods:
 So the new methods have been added to OSMDroid CacheManager. All added methods take care of the extra tiles downloaded 
