@@ -62,7 +62,7 @@ public class WPCacheManager {
     protected final MapTileProviderBase mTileProvider;
     protected final TileWriter mTileWriter;
     protected final MapView mMapView;
-    static final double EARTH_RADIUS_IN_METERS = 6371000.0;
+    static final double EARTH_RADIUS_IN_METERS = 6371000.0;	//meters
 
     public WPCacheManager(final MapView mapView) {
         mTileProvider = mapView.getTileProvider();
