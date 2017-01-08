@@ -171,7 +171,6 @@ public class WPCacheManager {
      * Calculation done based on http://www.movable-type.co.uk/scripts/latlong.html
      */
     public int possibleTilesCovered(ArrayList<GeoPoint> geoPoints, final int zoomMin, final int zoomMax) {
-        int total = 0;
         ArrayList<Point>  tilePoints = new ArrayList<>();
         boolean foundTilePoint;
         GeoPoint prevPoint = null, wayPoint;
@@ -256,7 +255,6 @@ public class WPCacheManager {
 
                 prevPoint = geoPoint;
             }
-            total += tilePoints.size();
         }
         Log.d(Constants.APP_TAG, "need " + tilePoints.size() + " Tiles");
         return tilePoints.size();
