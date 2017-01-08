@@ -1,4 +1,4 @@
-package com.ndguide.ndguide;
+package com.example;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -179,7 +179,6 @@ public class WPCacheManager {
         Point tile, prevTile = null, lastPoint;
 
         for (int zoomLevel = zoomMin; zoomLevel <= zoomMax; zoomLevel++) {
-
             for (GeoPoint geoPoint : geoPoints) {
 
                 d = TileSystem.GroundResolution(geoPoint.getLatitude(), zoomLevel);
@@ -212,20 +211,20 @@ public class WPCacheManager {
                             latRad = Math.asin(Math.sin(prevLatRad) * Math.cos(d / EARTH_RADIUS_IN_METERS) + Math.cos(prevLatRad) * Math.sin(d / EARTH_RADIUS_IN_METERS) * Math.cos(brng));
                             lonRad = prevLonRad + Math.atan2(Math.sin(brng) * Math.sin(d / EARTH_RADIUS_IN_METERS) * Math.cos(prevLatRad), Math.cos(d / EARTH_RADIUS_IN_METERS) - Math.sin(prevLatRad) * Math.sin(latRad));
 
-                            wayPoint.setLatitudeE6((int)((latRad * 180.0 / Math.PI)* 1E6));
-                            wayPoint.setLongitudeE6((int)((lonRad * 180.0 / Math.PI) * 1E6));
+                            wayPoint.setLatitudeE6((int) ((latRad * 180.0 / Math.PI) * 1E6));
+                            wayPoint.setLongitudeE6((int) ((lonRad * 180.0 / Math.PI) * 1E6));
 
                             tile = getMapTileFromCoordinates(wayPoint.getLatitude(), wayPoint.getLongitude(), zoomLevel);
 
                             if (!tile.equals(prevTile)) {
-                                for (int xAround = tile.x - 1; xAround <= tile.x + 1; xAround++) {
-                                    for (int yAround = tile.y - 1; yAround <= tile.y + 1; yAround++) {
+//Log.d(Constants.APP_TAG, "New Tile lat " + tile.x + " lon " + tile.y);
+                                for (int xAround = (tile.x > 0 ? tile.x - 1 : 0); xAround <= tile.x + 1; xAround++) {
+                                    for (int yAround = (tile.y > 0 ? tile.y - 1 : 0); yAround <= tile.y + 1; yAround++) {
 
                                         Point tileAround = new Point(xAround, yAround);
                                         foundTilePoint = false;
-                                        int iterate = 0;
                                         for (Point inList : tilePoints) {
-                                            iterate++;
+
                                             if (tileAround.equals(inList.x, inList.y)) {
                                                 foundTilePoint = true;
                                                 break;
@@ -240,15 +239,15 @@ public class WPCacheManager {
 
                                 prevTile = tile;
                             }
-                         }
+                        }
                     }
 
                 } else {
                     tile = getMapTileFromCoordinates(geoPoint.getLatitude(), geoPoint.getLongitude(), zoomLevel);
                     prevTile = tile;
 
-                    for (int xAround = tile.x - 1; xAround <= tile.x + 1; xAround ++) {
-                        for (int yAround = tile.y - 1; yAround <= tile.y + 1; yAround ++) {
+                    for (int xAround = (tile.x > 0 ? tile.x - 1 : 0); xAround <= tile.x + 1; xAround++) {
+                        for (int yAround = (tile.y > 0 ? tile.y - 1 : 0); yAround <= tile.y + 1; yAround++) {
                             Point tileAround = new Point(xAround, yAround);
                             tilePoints.add(0, tileAround);
                         }
@@ -257,7 +256,7 @@ public class WPCacheManager {
 
                 prevPoint = geoPoint;
             }
-
+            total += tilePoints.size();
         }
         Log.d(Constants.APP_TAG, "need " + tilePoints.size() + " Tiles");
         return tilePoints.size();
@@ -460,6 +459,7 @@ public class WPCacheManager {
         @Override
         protected void onPreExecute() {
             int total = 0;
+
             if (mBB != null) {
                 total = possibleTilesInArea(mBB, mZoomMin, mZoomMax);
             } else if (mGeoPoints != null) {
@@ -546,7 +546,7 @@ public class WPCacheManager {
                                 errors++;
                             }
                             tileCounter++;
-                            if (tileCounter % 20 == 0) {
+                            if (tileCounter % 10 == 0) {
                                 if (isCancelled()) {
                                     return errors;
                                 }
@@ -563,6 +563,7 @@ public class WPCacheManager {
                 boolean foundTilePoint;
 
                 for (int zoomLevel = mZoomMin; zoomLevel <= mZoomMax; zoomLevel++) {
+                    final int mapTileUpperBound = 1 << zoomLevel;
 
                     for (GeoPoint geoPoint : mGeoPoints) {
 
@@ -603,8 +604,8 @@ public class WPCacheManager {
 
                                     if (!tile.equals(prevTile)) {
                                         //Log.d(Constants.APP_TAG, "New Tile lat " + tile.x + " lon " + tile.y);
-                                        for (int xAround = tile.x - 1; xAround <= tile.x + 1; xAround++) {
-                                            for (int yAround = tile.y - 1; yAround <= tile.y + 1; yAround++) {
+                                        for (int xAround = (tile.x > 0 ? tile.x - 1 : 0); xAround <= tile.x + 1; xAround++) {
+                                            for (int yAround = (tile.y > 0 ? tile.y - 1 : 0); yAround <= tile.y + 1; yAround++) {
                                                 Point tileAround = new Point(xAround, yAround);
                                                 foundTilePoint = false;
 
@@ -622,14 +623,16 @@ public class WPCacheManager {
                                                 }
 
                                                 if (!foundTilePoint) {
-                                                    final MapTile tileToDownload = new MapTile(zoomLevel, tileAround.x, tileAround.y);
+                                                    final int tileY = MyMath.mod(tileAround.y, mapTileUpperBound);
+                                                    final int tileX = MyMath.mod(tileAround.x, mapTileUpperBound);
+                                                    final MapTile tileToDownload = new MapTile(zoomLevel, tileX, tileY);
                                                     //Drawable currentMapTile = mTileProvider.getMapTile(tile);
                                                     boolean ok = loadTile(tileSource, tileToDownload);
                                                     if (!ok) {
                                                         errors++;
                                                     }
                                                     tileCounter++;
-                                                    if (tileCounter % 20 == 0) {
+                                                    if (tileCounter % 10 == 0) {
                                                         if (isCancelled()) {
                                                             return errors;
                                                         }
@@ -650,10 +653,12 @@ public class WPCacheManager {
                             prevTile = tile;
                             //Log.d(Constants.APP_TAG, "New Tile lat " + tile.x + " lon " + tile.y);
 
-                            for (int xAround = tile.x - 1; xAround <= tile.x + 1; xAround ++) {
-                                for (int yAround = tile.y - 1; yAround <= tile.y + 1; yAround ++) {
+                            for (int xAround = (tile.x > 0 ? tile.x - 1 : 0); xAround <= tile.x + 1; xAround ++) {
+                                for (int yAround = (tile.y > 0 ? tile.y - 1 : 0); yAround <= tile.y + 1; yAround ++) {
                                     Point tileAround = new Point(xAround, yAround);
-                                    final MapTile tileToDownload = new MapTile(zoomLevel, tileAround.x, tileAround.y);
+                                    final int tileY = MyMath.mod(tileAround.y, mapTileUpperBound);
+                                    final int tileX = MyMath.mod(tileAround.x, mapTileUpperBound);
+                                    final MapTile tileToDownload = new MapTile(zoomLevel, tileX, tileY);
 
                                     //Drawable currentMapTile = mTileProvider.getMapTile(tile);
                                     boolean ok = loadTile(tileSource, tileToDownload);
@@ -661,7 +666,7 @@ public class WPCacheManager {
                                         errors++;
                                     }
                                     tileCounter++;
-                                    if (tileCounter % 20 == 0) {
+                                    if (tileCounter % 10 == 0) {
                                         if (isCancelled()) {
                                             return errors;
                                         }
