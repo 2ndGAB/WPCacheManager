@@ -217,10 +217,10 @@ public class WPCacheManager {
 
                             if (!tile.equals(prevTile)) {
 //Log.d(Constants.APP_TAG, "New Tile lat " + tile.x + " lon " + tile.y);
-                            	int ofs = tile.x >= 0 ? 0 : -tile.x;
-                                for (int xAround = tile.x + ofs; xAround <= tile.x + 1 + ofs; xAround++) {
-                                	ofs = tile.y >= 0 ? 0 : -tile.y;
-                                    for (int yAround = tile.y + ofs; yAround <= tile.y + 1 + ofs; yAround++) {
+                            	int ofsx = tile.x >= 0 ? 0 : -tile.x;
+                                for (int xAround = tile.x + ofsx; xAround <= tile.x + 1 + ofsx; xAround++) {
+                                	int ofsy = tile.y >= 0 ? 0 : -tile.y;
+                                    for (int yAround = tile.y + ofsy; yAround <= tile.y + 1 + ofsy; yAround++) {
 
                                         Point tileAround = new Point(xAround, yAround);
                                         foundTilePoint = false;
@@ -247,10 +247,10 @@ public class WPCacheManager {
                     tile = getMapTileFromCoordinates(geoPoint.getLatitude(), geoPoint.getLongitude(), zoomLevel);
                     prevTile = tile;
 					
-					int ofs = tile.x >= 0 ? 0 : -tile.x;
-                    for (int xAround = tile.x + ofs; xAround <= tile.x + 1 + ofs; xAround++) {
-                    	ofs = tile.y >= 0 ? 0 : -tile.y;
-                        for (int yAround = tile.y + ofs; yAround <= tile.y + 1 + ofs; yAround++) {
+					int ofsx = tile.x >= 0 ? 0 : -tile.x;
+					int ofsy = tile.y >= 0 ? 0 : -tile.y;
+                    for (int xAround = tile.x + ofsx; xAround <= tile.x + 1 + ofsx; xAround++) {
+                        for (int yAround = tile.y + ofsy; yAround <= tile.y + 1 + ofsy; yAround++) {
                             Point tileAround = new Point(xAround, yAround);
                             tilePoints.add(0, tileAround);
                         }
@@ -606,10 +606,10 @@ public class WPCacheManager {
 
                                     if (!tile.equals(prevTile)) {
                                         //Log.d(Constants.APP_TAG, "New Tile lat " + tile.x + " lon " + tile.y);
-                                        ofs = tile.x >= 0 ? 0 : -tile.x;
-                                        for (int xAround = tile.x + ofs; xAround <= tile.x + 1 + ofs; xAround++) {
-                                        	ofs = tile.y >= 0 ? 0 : -tile.y;
-                                            for (int yAround = tile.y + ofs; yAround <= tile.y + 1 + ofs; yAround++) {
+                                        int ofsx = tile.x >= 0 ? 0 : -tile.x;
+                                        int ofsy = tile.y >= 0 ? 0 : -tile.y;
+                                        for (int xAround = tile.x + ofsx; xAround <= tile.x + 1 + ofsx; xAround++) {
+                                            for (int yAround = tile.y + ofsy; yAround <= tile.y + 1 + ofsy; yAround++) {
                                                 Point tileAround = new Point(xAround, yAround);
                                                 foundTilePoint = false;
 
@@ -656,10 +656,10 @@ public class WPCacheManager {
                             tile = getMapTileFromCoordinates(geoPoint.getLatitude(), geoPoint.getLongitude(), zoomLevel);
                             prevTile = tile;
                             //Log.d(Constants.APP_TAG, "New Tile lat " + tile.x + " lon " + tile.y);
-                            ofs = tile.x >= 0 ? 0 : -tile.x;
-                            for (int xAround = tile.x + ofs; xAround <= tile.x + 1 + ofs; xAround ++) {
-                            	ofs = tile.y >= 0 ? 0 : -tile.y;
-                                for (int yAround = tile.y + ofs; yAround <= tile.y + 1 + ofs; yAround ++) {
+                            int ofsx = tile.x >= 0 ? 0 : -tile.x;
+                            int ofsy = tile.y >= 0 ? 0 : -tile.y;
+                            for (int xAround = tile.x + ofsx; xAround <= tile.x + 1 + ofsx; xAround ++) {
+                                for (int yAround = tile.y + ofsy; yAround <= tile.y + 1 + ofsy; yAround ++) {
                                     Point tileAround = new Point(xAround, yAround);
                                     final int tileY = MyMath.mod(tileAround.y, mapTileUpperBound);
                                     final int tileX = MyMath.mod(tileAround.x, mapTileUpperBound);
@@ -784,10 +784,10 @@ public class WPCacheManager {
                 final int mapTileUpperBound = 1 << zoomLevel;
                 //Get all the MapTiles from the upper left to the lower right:
                 //In case we used GeoPoint list, we also have to take care of the tiles around the area.
-                int ofs = mUpperLeft.y > 0 ? -1 : 0;
-                for (int y = mUpperLeft.y + ofs; y <= mLowerRight.y + 2 + ofs; y++) {
-                	ofs = mUpperLeft.x > 0 ? -1 : 0;
-                    for (int x = mUpperLeft.x + ofs; x <= mLowerRight.x + 2 + ofs; x++) {
+                int ofsy = mUpperLeft.y > 0 ? -1 : 0;
+                int ofsx = mUpperLeft.x > 0 ? -1 : 0;
+                for (int y = mUpperLeft.y + ofsy; y <= mLowerRight.y + 2 + ofsy; y++) {
+                    for (int x = mUpperLeft.x + ofsx; x <= mLowerRight.x + 2 + ofsx; x++) {
                         final int tileY = MyMath.mod(y, mapTileUpperBound);
                         final int tileX = MyMath.mod(x, mapTileUpperBound);
                         final MapTile tile = new MapTile(zoomLevel, tileX, tileY);
