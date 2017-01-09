@@ -218,8 +218,8 @@ public class WPCacheManager {
                             if (!tile.equals(prevTile)) {
 //Log.d(Constants.APP_TAG, "New Tile lat " + tile.x + " lon " + tile.y);
                             	int ofsx = tile.x >= 0 ? 0 : -tile.x;
+                                int ofsy = tile.y >= 0 ? 0 : -tile.y;
                                 for (int xAround = tile.x + ofsx; xAround <= tile.x + 1 + ofsx; xAround++) {
-                                	int ofsy = tile.y >= 0 ? 0 : -tile.y;
                                     for (int yAround = tile.y + ofsy; yAround <= tile.y + 1 + ofsy; yAround++) {
 
                                         Point tileAround = new Point(xAround, yAround);
