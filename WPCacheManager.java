@@ -658,6 +658,7 @@ public class WPCacheManager {
                             //Log.d(Constants.APP_TAG, "New Tile lat " + tile.x + " lon " + tile.y);
                             ofs = tile.x >= 0 ? 0 : -tile.x;
                             for (int xAround = tile.x + ofs; xAround <= tile.x + 1 + ofs; xAround ++) {
+                            	ofs = tile.y >= 0 ? 0 : -tile.y;
                                 for (int yAround = tile.y + ofs; yAround <= tile.y + 1 + ofs; yAround ++) {
                                     Point tileAround = new Point(xAround, yAround);
                                     final int tileY = MyMath.mod(tileAround.y, mapTileUpperBound);
